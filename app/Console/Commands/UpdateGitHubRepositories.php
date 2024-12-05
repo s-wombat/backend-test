@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\UpdateGitHubRepositoriesJob;
 use Illuminate\Console\Command;
 use App\Models\Project;
 use App\Services\GitHubService;
@@ -39,23 +40,11 @@ class UpdateGitHubRepositories extends Command
         $projects = Project::whereNotNull('github_owner')->get();
 
         foreach ($projects as $project) {
-            $this->info("Fetching repositories for project: {$project->name}");
-
-            // Получение репозиториев из GitHub API
-            $repositories = $this->gitHubService->getRepositories($project->github_owner);
-
-            if (isset($repositories['error'])) {
-                $this->error("Failed to fetch repositories for project '{$project->name}': " . $repositories['error']);
-                continue;
-            }
-
-            // Кэширование данных
-            Cache::put("github_repositories_{$project->id}", $repositories, now()->addHour());
-
-            $this->info("Repositories for project '{$project->name}' updated successfully.");
+            UpdateGitHubRepositoriesJob::dispatch($project);
+            $this->info("Dispatched job for project: {$project->name}");
         }
 
-        $this->info('GitHub repositories update completed.');
+        $this->info('All jobs dispatched successfully.');
     }
 }
 

@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
 
         // Обновление данных о репозиториях проекта
         $schedule->command('github:update-repositories')
-             ->hourly() // Запуск каждый час
+             ->hourly() // Обновление каждый час
              ->appendOutputTo(storage_path('logs/github_update.log')); // Логирование
     }
 
