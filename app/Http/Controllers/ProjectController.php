@@ -23,6 +23,7 @@ class ProjectController extends Controller
             ->with('manager')
             ->when($request->has('name'), fn($q) => $q->where('name', 'like', '%' . $request->name . '%'))
             ->when($request->has('description'), fn($q) => $q->where('description', 'like', '%' . $request->description . '%'))
+            ->when($request->has('github_owner'), fn($q) => $q->where('github_owner', 'like', '%' . $request->github_owner . '%'))
             ->when($request->has('status'), fn($q) => $q->where('status', $request->status))
             ->get();
 
@@ -38,6 +39,7 @@ class ProjectController extends Controller
             'name' => 'required|string',
             'description' => 'nullable|string',
             'status' => ['required', new Enum(ProjectStatuses::class)],
+            'github_owner' => 'required|string',
             'user_id' => 'required|exists:users,id',
         ]);
 
@@ -64,6 +66,7 @@ class ProjectController extends Controller
             'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|nullable|string',
             'status' => ['sometimes', new Enum(ProjectStatuses::class)],
+            'github_owner' => 'sometimes|string',
             'users_id' => 'sometimes|exists:users,id',
         ]);
 

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GitHubController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WeatherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'projects' => ProjectController::class,
         'tasks' => TaskController::class,
     ]);
+
+    Route::get('/weather', [WeatherController::class, 'getCachedWeather']);
+    Route::get('/projects/{projectId}/repositories', [GitHubController::class, 'getRepositories']);
 });
